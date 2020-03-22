@@ -1,4 +1,13 @@
-# Will try to scrape a site using beautifull soup and request 
+# Author = Erik V.
+# Github = https://github.com/erikv99
+# Project for experimenting and practicing with webscraping using beautifulsoup. 
+# Site i'm going to scrape = quotes to scrape.
+# TODO:
+# - make it crawl (also scrape other page numbers) (rn it only does the main page)
+# - save data in a sql database using xampp. 
+# - Maybe display the data on a page? or in a GUI?
+
+# Imports
 from bs4 import BeautifulSoup
 import requests
 
@@ -42,6 +51,8 @@ def main():
 
     urlHomePage = "http://quotes.toscrape.com/"
    
+    # Gettting our soup object.
+    soup = getSoup(urlHomePage)
     # getting all the DIV's with the "quote" class.
     quotes = soup.find_all("div", attrs={"class" : "quote"})
 
