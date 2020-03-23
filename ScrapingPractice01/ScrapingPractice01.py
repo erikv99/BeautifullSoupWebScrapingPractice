@@ -41,8 +41,6 @@ def getSoup(url):
     # When no errors have occured
     else:
 
-        # getting the source code by using the .text on our response object
-
         # parsing the source code in to a soup object using a lxml parser
         soup = BeautifulSoup(source, "lxml")
         # returning our soup object
