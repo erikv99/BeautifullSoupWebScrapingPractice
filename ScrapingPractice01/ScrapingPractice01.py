@@ -17,6 +17,7 @@ def getSoup(url):
 
         # getting the site we want to scrape in a "response object", will timeout if connection takes more then 10 seconds or data hasn't been send for more then 10 seconds
         response = requests.get(url, timeout=10)
+        source = response.content
         # calling raise_for_status to see if any HTTP errors occured.
         response.raise_for_status()
 
@@ -26,7 +27,7 @@ def getSoup(url):
         return None
     # catching connection errors
     except requests.exceptions.ConnectionError as errc:
-        print("Error Connecting: " errc)
+        print("Error Connecting: ", errc)
         return None
     # catching timeout errors
     except requests.exceptions.Timeout as errt:
@@ -41,7 +42,7 @@ def getSoup(url):
     else:
 
         # getting the source code by using the .text on our response object
-        response.text
+
         # parsing the source code in to a soup object using a lxml parser
         soup = BeautifulSoup(source, "lxml")
         # returning our soup object
@@ -49,18 +50,35 @@ def getSoup(url):
 
 def main():
 
-    urlHomePage = "http://quotes.toscrape.com/"
-   
-    # Gettting our soup object.
-    soup = getSoup(urlHomePage)
-    # getting all the DIV's with the "quote" class.
-    quotes = soup.find_all("div", attrs={"class" : "quote"})
-
-    # getting author and quote and saving them in a dictionary
+    # pageNumber will be incremented at the end of each scrape (each page)
+    pageNumber = 1
     
-    for el in quotes:
-        print(el.prettify())
+    # Scrape first 3 pages
+    for i in range(3): 
 
+        # First page is just the standard url
+        if (pageNumber == 1):
+            firstPageURL = "http://quotes.toscrape.com/"
+            soup = getSoup(firstPageURL)
+
+        else:
+
+            # different page number every time we come thru here
+            pageToScrapeURL = "http://quotes.toscrape.com/page/{}/".format(str(pageNumber))
+            soup = getSoup(pageToScrapeURL)
+
+        # Finding all the quote divs
+        allDivs = soup.find_all("div", {"class":"quote"})
+
+        # Looping thru each div
+        for div in allDivs:
+
+            quote = div.find("span", {"class":"text"}).text
+            author = div.find("small", {"class":"author"}).text
+            print("Quote:\n" + quote + "\nAuthor:" + author + "\n")
+
+        # Incrementing the page number
+        pageNumber += 1
 
 if (__name__ == "__main__"):
     main()
