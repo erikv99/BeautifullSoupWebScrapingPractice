@@ -10,6 +10,7 @@
 # Imports
 from bs4 import BeautifulSoup
 import requests
+import mysql.connector
 
 def __getSoup(url):
     """Will return the soup object for our url"""
@@ -50,7 +51,7 @@ def __scrapeQuotes(amountOfPages):
     """Will scrape x amount of pages saving quotes and authors"""
     # pageNumber will be incremented at the end of each scrape (each page)
     pageNumber = 1
-    
+
     # Scraping x amount of pages
     for i in range(amountOfPages): 
 
@@ -67,6 +68,10 @@ def __scrapeQuotes(amountOfPages):
 
         # Finding all the quote divs
         allDivs = soup.find_all("div", {"class":"quote"})
+        
+        # If we get empty divs we know there is no more content so we break
+        if (len(allDivs) == 0):
+            break
 
         # Looping thru each div
         for div in allDivs:
@@ -78,6 +83,8 @@ def __scrapeQuotes(amountOfPages):
         # Incrementing the page number
         pageNumber += 1
 
+    print("\n\nScraped {} pages!".format(pageNumber - 1))
+    
 def __handleUserInput():
     """Will ask the number of pages to scrape from the user and check the input for problems will return the input"""
     while True:
