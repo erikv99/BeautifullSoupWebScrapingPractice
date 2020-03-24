@@ -13,7 +13,6 @@ import requests
 
 def __getSoup(url):
     """Will return the soup object for our url"""
-    
     try:
 
         # getting the site we want to scrape in a "response object", will timeout if connection takes more then 10 seconds or data hasn't been send for more then 10 seconds
@@ -49,7 +48,6 @@ def __getSoup(url):
 
 def __scrapeQuotes(amountOfPages):
     """Will scrape x amount of pages saving quotes and authors"""
-    
     # pageNumber will be incremented at the end of each scrape (each page)
     pageNumber = 1
     
@@ -80,9 +78,30 @@ def __scrapeQuotes(amountOfPages):
         # Incrementing the page number
         pageNumber += 1
 
+def __handleUserInput():
+    """Will ask the number of pages to scrape from the user and check the input for problems will return the input"""
+    while True:
+
+        try: 
+
+            userInput = int(input("How many pages would you like to scrape: "))
+
+            if (userInput > 100):
+                
+                print("Error: no more then 100 pages allowed!")
+
+            else:
+            
+                return userInput
+
+        except (ValueError, TypeError):
+
+            print("Error: input must be a whole number!")
+
 def main():
 
-    __scrapeQuotes(3)
+    amountToScrape = __handleUserInput()
+    __scrapeQuotes(amountToScrape)
 
 if (__name__ == "__main__"):
     main()
