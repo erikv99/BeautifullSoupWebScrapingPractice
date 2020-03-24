@@ -11,8 +11,9 @@
 from bs4 import BeautifulSoup
 import requests
 
-def getSoup(url):
+def __getSoup(url):
     """Will return the soup object for our url"""
+    
     try:
 
         # getting the site we want to scrape in a "response object", will timeout if connection takes more then 10 seconds or data hasn't been send for more then 10 seconds
@@ -46,24 +47,25 @@ def getSoup(url):
         # returning our soup object
         return soup
 
-def main():
-
+def __scrapeQuotes(amountOfPages):
+    """Will scrape x amount of pages saving quotes and authors"""
+    
     # pageNumber will be incremented at the end of each scrape (each page)
     pageNumber = 1
     
-    # Scrape first 3 pages
-    for i in range(3): 
+    # Scraping x amount of pages
+    for i in range(amountOfPages): 
 
         # First page is just the standard url
         if (pageNumber == 1):
             firstPageURL = "http://quotes.toscrape.com/"
-            soup = getSoup(firstPageURL)
+            soup = __getSoup(firstPageURL)
 
         else:
 
             # different page number every time we come thru here
             pageToScrapeURL = "http://quotes.toscrape.com/page/{}/".format(str(pageNumber))
-            soup = getSoup(pageToScrapeURL)
+            soup = __getSoup(pageToScrapeURL)
 
         # Finding all the quote divs
         allDivs = soup.find_all("div", {"class":"quote"})
@@ -77,6 +79,10 @@ def main():
 
         # Incrementing the page number
         pageNumber += 1
+
+def main():
+
+    __scrapeQuotes(3)
 
 if (__name__ == "__main__"):
     main()
