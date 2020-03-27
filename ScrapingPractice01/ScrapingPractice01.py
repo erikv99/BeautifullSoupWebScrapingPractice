@@ -14,6 +14,7 @@ import mysql.connector
 
 def __getSoup(url):
     """Will return the soup object for our url"""
+
     try:
 
         # getting the site we want to scrape in a "response object", will timeout if connection takes more then 10 seconds or data hasn't been send for more then 10 seconds
@@ -51,6 +52,7 @@ def __scrapeQuotes(amountOfPages):
     """Will scrape x amount of pages saving quotes and authors"""
     # pageNumber will be incremented at the end of each scrape (each page)
     pageNumber = 1
+    scrapedData = {}
 
     # Scraping x amount of pages
     for i in range(amountOfPages): 
@@ -78,12 +80,14 @@ def __scrapeQuotes(amountOfPages):
 
             quote = div.find("span", {"class":"text"}).text
             author = div.find("small", {"class":"author"}).text
+            scrapedData.update({author : quote})
             print("Quote:\n" + quote + "\nAuthor:" + author + "\n")
 
         # Incrementing the page number
         pageNumber += 1
 
     print("\n\nScraped {} pages!".format(pageNumber - 1))
+    return scrapedData
     
 def __handleUserInput():
     """Will ask the number of pages to scrape from the user and check the input for problems will return the input"""
@@ -93,22 +97,35 @@ def __handleUserInput():
 
             userInput = int(input("How many pages would you like to scrape: "))
 
-            if (userInput > 100):
-                
+            if (userInput > 100):              
+           
                 print("Error: no more then 100 pages allowed!")
 
             else:
-            
+                
                 return userInput
 
         except (ValueError, TypeError):
 
             print("Error: input must be a whole number!")
 
+def __addToSQL(dataInDic):
+    """Will add the given dictionary full of data to our sql database"""
+    db = mysql.connector.connect(
+        host = "localhost",
+        user = "",
+        passwd = "",
+        database = ""
+    )
+
 def main():
 
+    # Getting the amount of pages the user wants to scrape
     amountToScrape = __handleUserInput()
-    __scrapeQuotes(amountToScrape)
+    # Getting the scraped data in a dictionary (k=author v=quote)
+    scrapedData = __scrapeQuotes(amountToScrape)
+    # Adding the author and quote to the database
+    __addToSQL(scrapedData)
 
 if (__name__ == "__main__"):
     main()
