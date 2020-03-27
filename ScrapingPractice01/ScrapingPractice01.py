@@ -11,6 +11,8 @@
 from bs4 import BeautifulSoup
 import requests
 import mysql.connector
+from mysql.connector import Error
+from mysql.connector import errorcode
 
 def __getSoup(url):
     """Will return the soup object for our url"""
@@ -111,12 +113,42 @@ def __handleUserInput():
 
 def __addToSQL(dataInDic):
     """Will add the given dictionary full of data to our sql database"""
-    db = mysql.connector.connect(
+    try:
+        db = mysql.connector.connect(
         host = "localhost",
-        user = "",
+        user = "root",
         passwd = "",
-        database = ""
-    )
+        database = "bs4scrape"
+        )
+
+        cursor = db.cursor()    
+        sqlInsertQuery = "INSERT INTO quotes (author, quote) VALUES (%s, %s)"
+        
+        # Making a list of tuples / each tuple containing author and quote
+        valuesToInsert = []
+        # For each key / val we make a tuple and add it to the list
+        for key, value in dataInDic.items():
+            
+            valuesToInsert.append((key, value))
+
+        cursor.executemany(sqlInsertQuery, valuesToInsert)
+        db.commit()
+        print("Data succesfully inserted in table!")
+        
+    # Catching the error(s)
+    except mysql.connector.Error as error:
+        
+        print("Failed to insert data into table {}".format(error))
+
+    # Closing the connection in finally so if an error occurs (doesn't matter if we catch it) it will still close the connection
+    finally:
+
+        # Checking if the connection is still open
+        if (db.is_connected()):
+            # Closing the connection
+            db.close()
+            cursor.close()
+            print("MySQL connection closed!")
 
 def main():
 
