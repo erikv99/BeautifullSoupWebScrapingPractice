@@ -2,10 +2,6 @@
 # Github = https://github.com/erikv99
 # Project for experimenting and practicing with webscraping using beautifulsoup. 
 # Site i'm going to scrape = quotes to scrape.
-# TODO:
-# - make it crawl (also scrape other page numbers) (rn it only does the main page)
-# - save data in a sql database using xampp. 
-# - Maybe display the data on a page? or in a GUI?
 
 # Imports
 from bs4 import BeautifulSoup
