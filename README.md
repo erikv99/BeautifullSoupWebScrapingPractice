@@ -1,3 +1,3 @@
 # Webscraping Practice Project
-A webscraping practice project using beautifullsoup and requests.
+A webscraping practice project made in python using beautifullsoup, requests and MySQL.
 
